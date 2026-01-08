@@ -3,8 +3,17 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# Configuration de la base de données PostgreSQL
-DATABASE_URL = "postgresql://postgres:00000000@localhost:5432/optic"
+# Configuration de la base de données
+# En production (Render), utilise DATABASE_URL
+# En local, utilise PostgreSQL local
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:00000000@localhost:5432/optic"
+)
+
+# Render utilise "postgres://" mais SQLAlchemy veut "postgresql://"
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 engine = create_engine(
     DATABASE_URL, 
@@ -26,9 +35,13 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 # Configuration JWT
-SECRET_KEY = "01w4xv39Hv6fp7t7ZUnr-7i4ea66J9sr19s_My-q-bo"  
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+# En production, utilise les variables d'environnement
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "01w4xv39Hv6fp7t7ZUnr-7i4ea66J9sr19s_My-q-bo"
+)
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 
 # Dependency pour obtenir la session DB
 def get_db():
