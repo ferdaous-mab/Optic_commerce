@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Package, ShoppingCart, Users, DollarSign, TrendingUp, AlertTriangle, Activity, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Package, ShoppingCart, Users, DollarSign, TrendingUp, AlertTriangle, Activity, ArrowUpRight } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import Card from '../components/Card';
 import { productApi } from '../api/productApi';
 import { salesApi } from '../api/salesApi';
 import { authApi } from '../api/authApi';
 import { formatPrice, formatDate } from '../utils/helpers';
+import './dashboard.css';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -51,36 +51,51 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg font-medium">Chargement du tableau de bord...</p>
+      <div className="login-container">
+        <div className="animated-bg">
+          <div className="gradient-orb orb-1"></div>
+          <div className="gradient-orb orb-2"></div>
+          <div className="gradient-orb orb-3"></div>
+        </div>
+        <div style={{ position: 'relative', zIndex: 10, textAlign: 'center' }}>
+          <div className="loader" style={{ width: '60px', height: '60px', borderWidth: '4px', margin: '0 auto 20px' }}></div>
+          <p style={{ color: 'white', fontSize: '18px', fontWeight: '600' }}>Chargement du tableau de bord...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+    <div className="dashboard-container">
+      {/* Fond animé */}
+      <div className="dashboard-bg">
+        <div className="gradient-orb orb-1"></div>
+        <div className="gradient-orb orb-2"></div>
+        <div className="gradient-orb orb-3"></div>
+      </div>
+      <div className="dashboard-grid"></div>
+
       <Navbar />
-      <div className="flex">
+      
+      <div className="dashboard-layout">
         <Sidebar />
-        <main className="flex-1 p-8">
+        
+        <main className="dashboard-main">
           {/* Header */}
-          <div className="mb-8 fade-in">
-            <div className="flex items-center justify-between mb-2">
+          <div className="login-card" style={{ marginBottom: '32px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-2">
+                <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c', marginBottom: '8px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   Tableau de bord
                 </h1>
-                <p className="text-gray-600 flex items-center space-x-2">
+                <p style={{ color: '#718096', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Activity className="w-4 h-4" />
                   <span>Vue d'ensemble de votre activité en temps réel</span>
                 </p>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-500">Dernière mise à jour</p>
-                <p className="text-sm font-semibold text-gray-800">
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ fontSize: '12px', color: '#a0aec0' }}>Dernière mise à jour</p>
+                <p style={{ fontSize: '14px', fontWeight: '600', color: '#2d3748' }}>
                   {new Date().toLocaleDateString('fr-FR', { 
                     weekday: 'long', 
                     year: 'numeric', 
@@ -93,127 +108,111 @@ const Dashboard = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-2xl shadow-premium p-6 hover-lift fade-in border border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+            {/* Card Produits */}
+            <div className="login-card hover-lift">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div style={{ width: '48px', height: '48px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)' }}>
                   <Package className="w-6 h-6 text-white" />
                 </div>
-                <div className="flex items-center space-x-1 text-green-600 text-sm font-medium">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#48bb78', fontSize: '14px', fontWeight: '600' }}>
                   <ArrowUpRight className="w-4 h-4" />
                   <span>+12%</span>
                 </div>
               </div>
-              <div>
-                <p className="text-gray-600 text-sm font-medium mb-1">Produits</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalProducts}</p>
-                <p className="text-xs text-gray-500 mt-2">Total des produits en stock</p>
-              </div>
+              <p style={{ color: '#718096', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>Produits</p>
+              <p style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c' }}>{stats.totalProducts}</p>
+              <p style={{ fontSize: '12px', color: '#a0aec0', marginTop: '8px' }}>Total des produits en stock</p>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-premium p-6 hover-lift fade-in border border-gray-100" style={{animationDelay: '0.1s'}}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
+            {/* Card Ventes */}
+            <div className="login-card hover-lift">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div style={{ width: '48px', height: '48px', background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(72, 187, 120, 0.4)' }}>
                   <ShoppingCart className="w-6 h-6 text-white" />
                 </div>
-                <div className="flex items-center space-x-1 text-green-600 text-sm font-medium">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#48bb78', fontSize: '14px', fontWeight: '600' }}>
                   <ArrowUpRight className="w-4 h-4" />
                   <span>+8%</span>
                 </div>
               </div>
-              <div>
-                <p className="text-gray-600 text-sm font-medium mb-1">Ventes</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalSales}</p>
-                <p className="text-xs text-gray-500 mt-2">Transactions réalisées</p>
-              </div>
+              <p style={{ color: '#718096', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>Ventes</p>
+              <p style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c' }}>{stats.totalSales}</p>
+              <p style={{ fontSize: '12px', color: '#a0aec0', marginTop: '8px' }}>Transactions réalisées</p>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-premium p-6 hover-lift fade-in border border-gray-100" style={{animationDelay: '0.2s'}}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
+            {/* Card Utilisateurs */}
+            <div className="login-card hover-lift">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div style={{ width: '48px', height: '48px', background: 'linear-gradient(135deg, #9f7aea 0%, #805ad5 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(159, 122, 234, 0.4)' }}>
                   <Users className="w-6 h-6 text-white" />
                 </div>
-                <div className="flex items-center space-x-1 text-green-600 text-sm font-medium">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#48bb78', fontSize: '14px', fontWeight: '600' }}>
                   <ArrowUpRight className="w-4 h-4" />
                   <span>+5%</span>
                 </div>
               </div>
-              <div>
-                <p className="text-gray-600 text-sm font-medium mb-1">Utilisateurs</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalUsers}</p>
-                <p className="text-xs text-gray-500 mt-2">Comptes actifs</p>
-              </div>
+              <p style={{ color: '#718096', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>Utilisateurs</p>
+              <p style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c' }}>{stats.totalUsers}</p>
+              <p style={{ fontSize: '12px', color: '#a0aec0', marginTop: '8px' }}>Comptes actifs</p>
             </div>
 
-            <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-premium-lg p-6 hover-lift fade-in text-white" style={{animationDelay: '0.3s'}}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                  <DollarSign className="w-6 h-6 text-white" />
+            {/* Card Revenue */}
+            <div className="login-card hover-lift" style={{ background: 'linear-gradient(135deg, #ed8936 0%, #dd6b20 100%)', color: 'white' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div style={{ width: '48px', height: '48px', background: 'rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(10px)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <DollarSign className="w-6 h-6" />
                 </div>
-                <div className="flex items-center space-x-1 text-white text-sm font-medium bg-white/20 px-2 py-1 rounded-lg">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(255, 255, 255, 0.2)', padding: '4px 8px', borderRadius: '8px', fontSize: '14px', fontWeight: '600' }}>
                   <ArrowUpRight className="w-4 h-4" />
                   <span>+15%</span>
                 </div>
               </div>
-              <div>
-                <p className="text-orange-100 text-sm font-medium mb-1">Chiffre d'affaires</p>
-                <p className="text-3xl font-bold">{formatPrice(stats.totalRevenue)}</p>
-                <p className="text-xs text-orange-100 mt-2">Revenus totaux générés</p>
-              </div>
+              <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', opacity: 0.9 }}>Chiffre d'affaires</p>
+              <p style={{ fontSize: '32px', fontWeight: '700' }}>{formatPrice(stats.totalRevenue)}</p>
+              <p style={{ fontSize: '12px', marginTop: '8px', opacity: 0.8 }}>Revenus totaux générés</p>
             </div>
           </div>
 
           {/* Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px' }}>
             {/* Recent Sales */}
-            <div className="bg-white rounded-2xl shadow-premium p-6 fade-in border border-gray-100" style={{animationDelay: '0.4s'}}>
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-green-50 rounded-lg">
-                    <TrendingUp className="w-5 h-5 text-green-600" />
+            <div className="login-card">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '40px', height: '40px', background: 'rgba(72, 187, 120, 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#48bb78' }}>
+                    <TrendingUp className="w-5 h-5" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-800">Ventes récentes</h2>
+                  <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1a202c' }}>Ventes récentes</h2>
                 </div>
-                <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                <span style={{ fontSize: '12px', fontWeight: '600', color: '#718096', background: '#f7fafc', padding: '4px 12px', borderRadius: '20px' }}>
                   Dernières 5
                 </span>
               </div>
 
               {recentSales.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ShoppingCart className="w-8 h-8 text-gray-400" />
+                <div style={{ textAlign: 'center', padding: '48px 0' }}>
+                  <div style={{ width: '64px', height: '64px', background: '#f7fafc', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                    <ShoppingCart className="w-8 h-8" style={{ color: '#cbd5e0' }} />
                   </div>
-                  <p className="text-gray-500 font-medium">Aucune vente récente</p>
-                  <p className="text-gray-400 text-sm mt-1">Les nouvelles ventes apparaîtront ici</p>
+                  <p style={{ color: '#4a5568', fontWeight: '600' }}>Aucune vente récente</p>
+                  <p style={{ color: '#a0aec0', fontSize: '14px', marginTop: '4px' }}>Les nouvelles ventes apparaîtront ici</p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {recentSales.map((sale, index) => (
-                    <div
-                      key={sale.id}
-                      className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-green-50 rounded-xl hover:shadow-md transition-all border border-gray-100 hover:border-green-200"
-                      style={{animationDelay: `${0.5 + index * 0.1}s`}}
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-white font-bold shadow-md">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {recentSales.map((sale) => (
+                    <div key={sale.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', background: 'linear-gradient(to right, #f7fafc, #edf2f7)', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div style={{ width: '48px', height: '48px', background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', boxShadow: '0 4px 12px rgba(72, 187, 120, 0.3)' }}>
                           {sale.quantity}
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-800">{sale.product_nom}</p>
-                          <p className="text-sm text-gray-600">
-                            Par <span className="font-medium">{sale.user_nom}</span>
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {formatDate(sale.date)}
-                          </p>
+                          <p style={{ fontWeight: '600', color: '#2d3748' }}>{sale.product_nom}</p>
+                          <p style={{ fontSize: '14px', color: '#718096' }}>Par <span style={{ fontWeight: '500' }}>{sale.user_nom}</span></p>
+                          <p style={{ fontSize: '12px', color: '#a0aec0', marginTop: '4px' }}>{formatDate(sale.date)}</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-green-600 text-lg">
-                          {formatPrice(sale.prix_total)}
-                        </p>
-                      </div>
+                      <p style={{ fontWeight: '700', color: '#48bb78', fontSize: '18px' }}>{formatPrice(sale.prix_total)}</p>
                     </div>
                   ))}
                 </div>
@@ -221,55 +220,43 @@ const Dashboard = () => {
             </div>
 
             {/* Low Stock */}
-            <div className="bg-white rounded-2xl shadow-premium p-6 fade-in border border-gray-100" style={{animationDelay: '0.5s'}}>
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-orange-50 rounded-lg">
-                    <AlertTriangle className="w-5 h-5 text-orange-600" />
+            <div className="login-card">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '40px', height: '40px', background: 'rgba(237, 137, 54, 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ed8936' }}>
+                    <AlertTriangle className="w-5 h-5" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-800">Stock faible</h2>
+                  <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1a202c' }}>Stock faible</h2>
                 </div>
-                <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">
+                <span style={{ fontSize: '12px', fontWeight: '600', color: '#ed8936', background: 'rgba(237, 137, 54, 0.1)', padding: '4px 12px', borderRadius: '20px' }}>
                   {lowStockProducts.length} alertes
                 </span>
               </div>
 
               {lowStockProducts.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Package className="w-8 h-8 text-green-600" />
+                <div style={{ textAlign: 'center', padding: '48px 0' }}>
+                  <div style={{ width: '64px', height: '64px', background: 'rgba(72, 187, 120, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                    <Package className="w-8 h-8" style={{ color: '#48bb78' }} />
                   </div>
-                  <p className="text-gray-800 font-medium">Tous les stocks sont bons ! 👍</p>
-                  <p className="text-gray-500 text-sm mt-1">Aucun produit ne nécessite de réapprovisionnement</p>
+                  <p style={{ color: '#2d3748', fontWeight: '600' }}>Tous les stocks sont bons ! 👍</p>
+                  <p style={{ color: '#718096', fontSize: '14px', marginTop: '4px' }}>Aucun produit ne nécessite de réapprovisionnement</p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {lowStockProducts.map((product, index) => (
-                    <div
-                      key={product.id}
-                      className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-200 hover:shadow-md transition-all"
-                      style={{animationDelay: `${0.6 + index * 0.1}s`}}
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center text-white font-bold shadow-md">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {lowStockProducts.map((product) => (
+                    <div key={product.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', background: 'linear-gradient(to right, rgba(237, 137, 54, 0.1), rgba(245, 101, 101, 0.1))', borderRadius: '12px', border: '1px solid rgba(237, 137, 54, 0.3)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div style={{ width: '48px', height: '48px', background: 'linear-gradient(135deg, #ed8936 0%, #f56565 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', boxShadow: '0 4px 12px rgba(237, 137, 54, 0.3)' }}>
                           {product.stock}
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-800">{product.nom}</p>
-                          <p className="text-sm text-gray-600">
-                            Prix: <span className="font-medium">{formatPrice(product.prix)}</span>
-                          </p>
+                          <p style={{ fontWeight: '600', color: '#2d3748' }}>{product.nom}</p>
+                          <p style={{ fontSize: '14px', color: '#718096' }}>Prix: <span style={{ fontWeight: '500' }}>{formatPrice(product.prix)}</span></p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                          product.stock === 0 
-                            ? 'bg-red-100 text-red-700' 
-                            : 'bg-orange-100 text-orange-700'
-                        }`}>
-                          {product.stock === 0 ? '🔴 Rupture' : '⚠️ Réapprovisionner'}
-                        </span>
-                      </div>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '600', background: product.stock === 0 ? 'rgba(245, 101, 101, 0.1)' : 'rgba(237, 137, 54, 0.1)', color: product.stock === 0 ? '#f56565' : '#ed8936' }}>
+                        {product.stock === 0 ? '🔴 Rupture' : '⚠️ Réapprovisionner'}
+                      </span>
                     </div>
                   ))}
                 </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authApi } from '../api/authApi';
-import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import './login.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -35,116 +35,170 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md fade-in">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            👓 Optic Commerce
-          </h1>
-          <p className="text-gray-500">Créez votre compte</p>
+    <div className="login-container">
+      {/* Fond animé avec gradient */}
+      <div className="animated-bg">
+        <div className="gradient-orb orb-1"></div>
+        <div className="gradient-orb orb-2"></div>
+        <div className="gradient-orb orb-3"></div>
+      </div>
+
+      {/* Grille de fond */}
+      <div className="grid-background"></div>
+
+      {/* Carte d'inscription */}
+      <div className="login-card">
+        <div className="login-header">
+          <div className="logo-container">
+            <div className="logo-circle">
+              <span style={{ fontSize: '32px' }}>👓</span>
+            </div>
+          </div>
+          <h1 className="login-title">Optic Commerce</h1>
+          <p className="login-subtitle">Créez votre compte</p>
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+          <div className="alert alert-error">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
             {error}
           </div>
         )}
 
         {success && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
+          <div className="alert alert-success">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
             Inscription réussie ! Redirection vers la page de connexion...
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">Nom</label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                value={formData.nom}
-                onChange={(e) =>
-                  setFormData({ ...formData, nom: e.target.value })
-                }
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="Votre nom complet"
-                required
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <label htmlFor="nom" className="form-label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Nom
+            </label>
+            <input
+              type="text"
+              id="nom"
+              value={formData.nom}
+              onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+              placeholder="Votre nom complet"
+              required
+              className="form-input"
+            />
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
+          <div className="form-group">
+            <label htmlFor="email" className="form-label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
               Email
             </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="votre@email.com"
-                required
-              />
-            </div>
+            <input
+              type="email"
+              id="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder="votre@email.com"
+              required
+              className="form-input"
+            />
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
+          <div className="form-group">
+            <label htmlFor="password" className="form-label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
               Mot de passe
             </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <div className="password-input-wrapper">
               <input
                 type={showPassword ? 'text' : 'password'}
+                id="password"
                 value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 placeholder="••••••••"
                 required
                 minLength={6}
+                className="form-input"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="toggle-password"
               >
                 {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  </svg>
                 ) : (
-                  <Eye className="w-5 h-5" />
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
                 )}
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Minimum 6 caractères
-            </p>
+            <p className="input-hint">Minimum 6 caractères</p>
           </div>
 
-          <button
-            type="submit"
+          <button 
+            type="submit" 
+            className="submit-btn" 
             disabled={loading || success}
-            className="w-full bg-primary-500 text-white py-3 rounded-lg font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Inscription...' : "S'inscrire"}
+            {loading ? (
+              <span className="loader"></span>
+            ) : success ? (
+              <>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                Succès !
+              </>
+            ) : (
+              <>
+                S'inscrire
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </>
+            )}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-6">
-          Déjà un compte ?{' '}
-          <Link
-            to="/login"
-            className="text-primary-500 font-medium hover:underline"
-          >
-            Se connecter
-          </Link>
+        <p className="signup-link">
+          Déjà un compte? <Link to="/login">Se connecter</Link>
         </p>
+      </div>
+
+      {/* Particules flottantes */}
+      <div className="floating-particles">
+        {[...Array(20)].map((_, i) => (
+          <div key={i} className="particle" style={{
+            left: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 10}s`,
+            animationDuration: `${15 + Math.random() * 10}s`
+          }}></div>
+        ))}
       </div>
     </div>
   );

@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Plus, Search, Edit, Trash2, Package, AlertCircle, CheckCircle } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Package, AlertCircle, CheckCircle, X } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import Modal from '../components/Modal';
-import Table from '../components/Table';
 import { productApi } from '../api/productApi';
 import { formatPrice, getStockStatus } from '../utils/helpers';
+import './dashboard.css';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -63,12 +62,7 @@ const Products = () => {
       });
     } else {
       setEditingProduct(null);
-      setFormData({
-        nom: '',
-        prix: '',
-        stock: '',
-        image_url: '',
-      });
+      setFormData({ nom: '', prix: '', stock: '', image_url: '' });
     }
     setIsModalOpen(true);
     setError('');
@@ -78,12 +72,7 @@ const Products = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingProduct(null);
-    setFormData({
-      nom: '',
-      prix: '',
-      stock: '',
-      image_url: '',
-    });
+    setFormData({ nom: '', prix: '', stock: '', image_url: '' });
     setError('');
     setSuccess('');
   };
@@ -114,16 +103,12 @@ const Products = () => {
         fetchProducts();
       }, 1500);
     } catch (err) {
-      setError(
-        err.response?.data?.detail || 'Erreur lors de la sauvegarde du produit'
-      );
+      setError(err.response?.data?.detail || 'Erreur lors de la sauvegarde du produit');
     }
   };
 
   const handleDelete = async (product) => {
-    if (
-      window.confirm(`Êtes-vous sûr de vouloir supprimer "${product.nom}" ?`)
-    ) {
+    if (window.confirm(`Êtes-vous sûr de vouloir supprimer "${product.nom}" ?`)) {
       try {
         await productApi.deleteProduct(product.id);
         setSuccess('Produit supprimé avec succès !');
@@ -136,293 +121,255 @@ const Products = () => {
     }
   };
 
-  const columns = [
-    {
-      key: 'id',
-      label: 'ID',
-      render: (value) => (
-        <span className="font-mono text-sm text-gray-500">#{value}</span>
-      ),
-    },
-    {
-      key: 'nom',
-      label: 'Nom',
-      render: (value, row) => (
-        <div className="flex items-center space-x-3">
-          {row.image_url ? (
-            <img
-              src={row.image_url}
-              alt={value}
-              className="w-12 h-12 rounded-xl object-cover shadow-md"
-            />
-          ) : (
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center shadow-md">
-              <Package className="w-6 h-6 text-purple-600" />
-            </div>
-          )}
-          <span className="font-semibold text-gray-800">{value}</span>
-        </div>
-      ),
-    },
-    {
-      key: 'prix',
-      label: 'Prix',
-      render: (value) => (
-        <span className="font-bold text-green-600 text-lg">
-          {formatPrice(value)}
-        </span>
-      ),
-    },
-    {
-      key: 'stock',
-      label: 'Stock',
-      render: (value) => {
-        const status = getStockStatus(value);
-        const colorClasses = {
-          red: 'bg-red-100 text-red-800 border-red-200',
-          orange: 'bg-orange-100 text-orange-800 border-orange-200',
-          yellow: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-          green: 'bg-green-100 text-green-800 border-green-200',
-        };
-        return (
-          <span
-            className={`px-4 py-2 rounded-xl text-sm font-semibold border ${
-              colorClasses[status.color]
-            }`}
-          >
-            {value} unités ({status.label})
-          </span>
-        );
-      },
-    },
-  ];
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="text-center">
-          <div className="w-20 h-20 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 text-xl font-medium">Chargement des produits...</p>
+      <div className="login-container">
+        <div className="animated-bg">
+          <div className="gradient-orb orb-1"></div>
+          <div className="gradient-orb orb-2"></div>
+          <div className="gradient-orb orb-3"></div>
+        </div>
+        <div style={{ position: 'relative', zIndex: 10, textAlign: 'center' }}>
+          <div className="loader" style={{ width: '60px', height: '60px', borderWidth: '4px', margin: '0 auto 20px' }}></div>
+          <p style={{ color: 'white', fontSize: '18px', fontWeight: '600' }}>Chargement des produits...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+    <div className="dashboard-container">
+      <div className="dashboard-bg">
+        <div className="gradient-orb orb-1"></div>
+        <div className="gradient-orb orb-2"></div>
+        <div className="gradient-orb orb-3"></div>
+      </div>
+      <div className="dashboard-grid"></div>
+
       <Navbar />
-      <div className="flex">
+      
+      <div className="dashboard-layout">
         <Sidebar />
-        <main className="flex-1 p-8">
+        
+        <main className="dashboard-main">
           {/* Header */}
-          <div className="mb-8 fade-in">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-2">
-              Gestion des Produits
-            </h1>
-            <p className="text-gray-600 flex items-center space-x-2">
-              <Package className="w-4 h-4" />
-              <span>Gérez votre catalogue de produits</span>
-            </p>
+          <div className="login-card" style={{ marginBottom: '32px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ width: '48px', height: '48px', background: 'linear-gradient(135deg, #9f7aea 0%, #805ad5 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(159, 122, 234, 0.4)' }}>
+                <Package className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c', marginBottom: '4px', background: 'linear-gradient(135deg, #9f7aea 0%, #805ad5 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  Gestion des Produits
+                </h1>
+                <p style={{ color: '#718096', fontSize: '14px' }}>Gérez votre catalogue de produits</p>
+              </div>
+            </div>
           </div>
 
-          {/* Success/Error Messages */}
+          {/* Messages */}
           {success && (
-            <div className="bg-gradient-to-r from-green-50 to-green-100 border-l-4 border-green-500 text-green-800 px-6 py-4 rounded-xl mb-6 fade-in shadow-lg">
-              <div className="flex items-center">
-                <CheckCircle className="w-6 h-6 mr-3 text-green-600" />
-                <div>
-                  <p className="font-semibold">{success}</p>
-                </div>
-              </div>
+            <div className="alert alert-success" style={{ marginBottom: '24px' }}>
+              <CheckCircle className="w-5 h-5" />
+              {success}
             </div>
           )}
           {error && (
-            <div className="bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-500 text-red-800 px-6 py-4 rounded-xl mb-6 fade-in shadow-lg">
-              <div className="flex items-center">
-                <AlertCircle className="w-6 h-6 mr-3 text-red-600" />
-                <div>
-                  <p className="font-semibold">{error}</p>
-                </div>
-              </div>
+            <div className="alert alert-error" style={{ marginBottom: '24px' }}>
+              <AlertCircle className="w-5 h-5" />
+              {error}
             </div>
           )}
 
           {/* Action Bar */}
-          <div className="bg-white rounded-2xl shadow-premium p-6 mb-8 fade-in border border-gray-100">
-            <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:space-x-4">
-              <div className="relative w-full lg:w-96">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <div className="login-card" style={{ marginBottom: '32px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ position: 'relative', flex: 1 }}>
+                <Search style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#a0aec0', width: '20px', height: '20px' }} />
                 <input
                   type="text"
                   placeholder="Rechercher un produit..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-gray-50 hover:bg-white"
+                  className="form-input"
+                  style={{ paddingLeft: '48px' }}
                 />
               </div>
-
-              <button
-                onClick={() => handleOpenModal()}
-                className="w-full lg:w-auto flex items-center justify-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl hover-lift font-semibold"
-              >
+              <button onClick={() => handleOpenModal()} className="submit-btn">
                 <Plus className="w-5 h-5" />
                 <span>Nouveau produit</span>
               </button>
             </div>
           </div>
 
-          {/* Products Table/Empty State */}
+          {/* Products Grid */}
           {filteredProducts.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-premium p-16 text-center fade-in">
-              <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Package className="w-12 h-12 text-gray-400" />
+            <div className="login-card" style={{ textAlign: 'center', padding: '64px 32px' }}>
+              <div style={{ width: '80px', height: '80px', background: 'rgba(159, 122, 234, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                <Package className="w-10 h-10" style={{ color: '#9f7aea' }} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#2d3748', marginBottom: '8px' }}>
                 {searchTerm ? 'Aucun produit trouvé' : 'Aucun produit disponible'}
               </h3>
-              <p className="text-gray-500 mb-6">
-                {searchTerm
-                  ? 'Essayez une autre recherche'
-                  : 'Commencez par ajouter votre premier produit'}
+              <p style={{ color: '#718096', marginBottom: '24px' }}>
+                {searchTerm ? 'Essayez une autre recherche' : 'Commencez par ajouter votre premier produit'}
               </p>
               {!searchTerm && (
-                <button
-                  onClick={() => handleOpenModal()}
-                  className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg font-semibold"
-                >
+                <button onClick={() => handleOpenModal()} className="submit-btn" style={{ width: 'auto', display: 'inline-flex' }}>
                   <Plus className="w-5 h-5" />
                   <span>Ajouter un produit</span>
                 </button>
               )}
             </div>
           ) : (
-            <Table
-              columns={columns}
-              data={filteredProducts}
-              onEdit={handleOpenModal}
-              onDelete={handleDelete}
-            />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
+              {filteredProducts.map((product) => {
+                const status = getStockStatus(product.stock);
+                const statusColors = {
+                  red: { bg: 'rgba(245, 101, 101, 0.1)', text: '#f56565', border: 'rgba(245, 101, 101, 0.3)' },
+                  orange: { bg: 'rgba(237, 137, 54, 0.1)', text: '#ed8936', border: 'rgba(237, 137, 54, 0.3)' },
+                  yellow: { bg: 'rgba(237, 204, 88, 0.1)', text: '#d69e2e', border: 'rgba(237, 204, 88, 0.3)' },
+                  green: { bg: 'rgba(72, 187, 120, 0.1)', text: '#48bb78', border: 'rgba(72, 187, 120, 0.3)' },
+                };
+                const statusColor = statusColors[status.color];
+
+                return (
+                  <div key={product.id} className="login-card hover-lift" style={{ padding: '24px' }}>
+                    {product.image_url ? (
+                      <img src={product.image_url} alt={product.nom} style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '12px', marginBottom: '16px' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '180px', background: 'linear-gradient(135deg, rgba(159, 122, 234, 0.1), rgba(128, 90, 213, 0.1))', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+                        <Package className="w-16 h-16" style={{ color: '#9f7aea' }} />
+                      </div>
+                    )}
+                    
+                    <div style={{ marginBottom: '12px' }}>
+                      <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#2d3748', marginBottom: '8px' }}>{product.nom}</h3>
+                      <p style={{ fontSize: '24px', fontWeight: '700', color: '#48bb78' }}>{formatPrice(product.prix)}</p>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                      <span style={{ fontSize: '14px', color: '#718096' }}>Stock:</span>
+                      <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '600', background: statusColor.bg, color: statusColor.text, border: `1px solid ${statusColor.border}` }}>
+                        {product.stock} - {status.label}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button onClick={() => handleOpenModal(product)} style={{ flex: 1, padding: '10px', background: 'rgba(102, 126, 234, 0.1)', border: 'none', borderRadius: '10px', color: '#667eea', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.3s' }}>
+                        <Edit className="w-4 h-4" />
+                        Modifier
+                      </button>
+                      <button onClick={() => handleDelete(product)} style={{ flex: 1, padding: '10px', background: 'rgba(245, 101, 101, 0.1)', border: 'none', borderRadius: '10px', color: '#f56565', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.3s' }}>
+                        <Trash2 className="w-4 h-4" />
+                        Supprimer
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </main>
       </div>
 
       {/* Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        title={
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-              <Package className="w-5 h-5 text-white" />
-            </div>
-            <span>{editingProduct ? 'Modifier le produit' : 'Nouveau produit'}</span>
-          </div>
-        }
-      >
-        {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 text-red-800 px-4 py-3 rounded-lg mb-4">
-            <div className="flex items-center">
-              <AlertCircle className="w-5 h-5 mr-3" />
-              {error}
-            </div>
-          </div>
-        )}
-        {success && (
-          <div className="bg-green-50 border-l-4 border-green-500 text-green-800 px-4 py-3 rounded-lg mb-4">
-            <div className="flex items-center">
-              <CheckCircle className="w-5 h-5 mr-3" />
-              {success}
-            </div>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2 text-sm">
-              Nom du produit *
-            </label>
-            <input
-              type="text"
-              value={formData.nom}
-              onChange={(e) =>
-                setFormData({ ...formData, nom: e.target.value })
-              }
-              className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-              placeholder="Ex: Lunettes Ray-Ban Classic"
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2 text-sm">
-                Prix (MAD) *
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.prix}
-                onChange={(e) =>
-                  setFormData({ ...formData, prix: e.target.value })
-                }
-                className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                placeholder="250.00"
-                required
-              />
+      {isModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+          <div className="login-card" style={{ maxWidth: '500px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: '40px', height: '40px', background: 'linear-gradient(135deg, #9f7aea 0%, #805ad5 100%)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Package className="w-5 h-5 text-white" />
+                </div>
+                <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1a202c' }}>
+                  {editingProduct ? 'Modifier le produit' : 'Nouveau produit'}
+                </h2>
+              </div>
+              <button onClick={handleCloseModal} style={{ padding: '8px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#718096' }}>
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2 text-sm">
-                Stock *
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={formData.stock}
-                onChange={(e) =>
-                  setFormData({ ...formData, stock: e.target.value })
-                }
-                className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                placeholder="50"
-                required
-              />
-            </div>
-          </div>
+            {error && (
+              <div className="alert alert-error" style={{ marginBottom: '16px' }}>
+                <AlertCircle className="w-5 h-5" />
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="alert alert-success" style={{ marginBottom: '16px' }}>
+                <CheckCircle className="w-5 h-5" />
+                {success}
+              </div>
+            )}
 
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2 text-sm">
-              URL de l'image (optionnel)
-            </label>
-            <input
-              type="url"
-              value={formData.image_url}
-              onChange={(e) =>
-                setFormData({ ...formData, image_url: e.target.value })
-              }
-              className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-              placeholder="https://example.com/image.jpg"
-            />
-            <p className="text-xs text-gray-500 mt-2">Laissez vide pour utiliser une image par défaut</p>
-          </div>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div className="form-group">
+                <label className="form-label">Nom du produit *</label>
+                <input
+                  type="text"
+                  value={formData.nom}
+                  onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                  className="form-input"
+                  placeholder="Ex: Lunettes Ray-Ban Classic"
+                  required
+                />
+              </div>
 
-          <div className="flex space-x-4 pt-6">
-            <button
-              type="button"
-              onClick={handleCloseModal}
-              className="flex-1 px-6 py-3.5 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all font-semibold"
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl font-semibold"
-            >
-              {editingProduct ? '✓ Modifier' : '+ Créer'}
-            </button>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="form-group">
+                  <label className="form-label">Prix (MAD) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formData.prix}
+                    onChange={(e) => setFormData({ ...formData, prix: e.target.value })}
+                    className="form-input"
+                    placeholder="250.00"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Stock *</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.stock}
+                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                    className="form-input"
+                    placeholder="50"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">URL de l'image (optionnel)</label>
+                <input
+                  type="url"
+                  value={formData.image_url}
+                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                  className="form-input"
+                  placeholder="https://example.com/image.jpg"
+                />
+                <p className="input-hint">Laissez vide pour utiliser une image par défaut</p>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                <button type="button" onClick={handleCloseModal} style={{ flex: 1, padding: '14px', border: '2px solid #e2e8f0', background: 'white', borderRadius: '12px', color: '#4a5568', fontWeight: '600', cursor: 'pointer' }}>
+                  Annuler
+                </button>
+                <button type="submit" className="submit-btn" style={{ flex: 1 }}>
+                  {editingProduct ? '✓ Modifier' : '+ Créer'}
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
-      </Modal>
+        </div>
+      )}
     </div>
   );
 };

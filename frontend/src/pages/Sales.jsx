@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Plus, Search, ShoppingCart, Calendar, DollarSign, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
+import { Plus, Search, ShoppingCart, Calendar, DollarSign, TrendingUp, AlertCircle, CheckCircle, X, Edit, Trash2 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
-import Modal from '../components/Modal';
-import Table from '../components/Table';
-import Card from '../components/Card';
 import { salesApi } from '../api/salesApi';
 import { productApi } from '../api/productApi';
 import { authApi } from '../api/authApi';
 import { formatPrice, formatDate } from '../utils/helpers';
+import './dashboard.css';
 
 const Sales = () => {
   const [sales, setSales] = useState([]);
@@ -65,9 +63,7 @@ const Sales = () => {
       setUsers(usersData);
 
       const today = new Date().toISOString().split('T')[0];
-      const todaySalesData = salesData.filter((sale) =>
-        sale.date.startsWith(today)
-      );
+      const todaySalesData = salesData.filter((sale) => sale.date.startsWith(today));
 
       setStats({
         totalSales: salesData.length,
@@ -92,11 +88,7 @@ const Sales = () => {
       });
     } else {
       setEditingSale(null);
-      setFormData({
-        product_id: '',
-        user_id: '',
-        quantity: '',
-      });
+      setFormData({ product_id: '', user_id: '', quantity: '' });
     }
     setIsModalOpen(true);
     setError('');
@@ -106,11 +98,7 @@ const Sales = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingSale(null);
-    setFormData({
-      product_id: '',
-      user_id: '',
-      quantity: '',
-    });
+    setFormData({ product_id: '', user_id: '', quantity: '' });
     setError('');
     setSuccess('');
   };
@@ -140,18 +128,12 @@ const Sales = () => {
         fetchData();
       }, 1500);
     } catch (err) {
-      setError(
-        err.response?.data?.detail || 'Erreur lors de la sauvegarde de la vente'
-      );
+      setError(err.response?.data?.detail || 'Erreur lors de la sauvegarde de la vente');
     }
   };
 
   const handleDelete = async (sale) => {
-    if (
-      window.confirm(
-        `Êtes-vous sûr de vouloir supprimer cette vente ? Le stock sera restauré.`
-      )
-    ) {
+    if (window.confirm(`Êtes-vous sûr de vouloir supprimer cette vente ? Le stock sera restauré.`)) {
       try {
         await salesApi.deleteSale(sale.id);
         setSuccess('Vente supprimée avec succès !');
@@ -164,359 +146,297 @@ const Sales = () => {
     }
   };
 
-  const columns = [
-    {
-      key: 'id',
-      label: 'ID',
-      render: (value) => (
-        <span className="font-mono text-sm text-gray-500">#{value}</span>
-      ),
-    },
-    {
-      key: 'product_nom',
-      label: 'Produit',
-      render: (value) => (
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center">
-            <ShoppingCart className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-semibold text-gray-800">{value}</span>
-        </div>
-      ),
-    },
-    {
-      key: 'user_nom',
-      label: 'Vendeur',
-      render: (value) => (
-        <span className="text-gray-700">{value}</span>
-      ),
-    },
-    {
-      key: 'quantity',
-      label: 'Quantité',
-      render: (value) => (
-        <span className="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-lg text-sm font-semibold border border-blue-200">
-          {value} unité{value > 1 ? 's' : ''}
-        </span>
-      ),
-    },
-    {
-      key: 'prix_unitaire',
-      label: 'Prix unitaire',
-      render: (value) => (
-        <span className="text-gray-600 font-medium">{formatPrice(value)}</span>
-      ),
-    },
-    {
-      key: 'prix_total',
-      label: 'Total',
-      render: (value) => (
-        <span className="font-bold text-green-600 text-lg">{formatPrice(value)}</span>
-      ),
-    },
-    {
-      key: 'date',
-      label: 'Date',
-      render: (value) => (
-        <span className="text-gray-500 text-sm">{formatDate(value)}</span>
-      ),
-    },
-  ];
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="text-center">
-          <div className="w-20 h-20 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 text-xl font-medium">Chargement des ventes...</p>
+      <div className="login-container">
+        <div className="animated-bg">
+          <div className="gradient-orb orb-1"></div>
+          <div className="gradient-orb orb-2"></div>
+          <div className="gradient-orb orb-3"></div>
+        </div>
+        <div style={{ position: 'relative', zIndex: 10, textAlign: 'center' }}>
+          <div className="loader" style={{ width: '60px', height: '60px', borderWidth: '4px', margin: '0 auto 20px' }}></div>
+          <p style={{ color: 'white', fontSize: '18px', fontWeight: '600' }}>Chargement des ventes...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+    <div className="dashboard-container">
+      <div className="dashboard-bg">
+        <div className="gradient-orb orb-1"></div>
+        <div className="gradient-orb orb-2"></div>
+        <div className="gradient-orb orb-3"></div>
+      </div>
+      <div className="dashboard-grid"></div>
+
       <Navbar />
-      <div className="flex">
+      
+      <div className="dashboard-layout">
         <Sidebar />
-        <main className="flex-1 p-8">
+        
+        <main className="dashboard-main">
           {/* Header */}
-          <div className="mb-8 fade-in">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-2">
-              Gestion des Ventes
-            </h1>
-            <p className="text-gray-600 flex items-center space-x-2">
-              <TrendingUp className="w-4 h-4" />
-              <span>Suivez et gérez toutes vos transactions</span>
-            </p>
+          <div className="login-card" style={{ marginBottom: '32px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ width: '48px', height: '48px', background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(72, 187, 120, 0.4)' }}>
+                <ShoppingCart className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c', marginBottom: '4px', background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  Gestion des Ventes
+                </h1>
+                <p style={{ color: '#718096', fontSize: '14px' }}>Suivez et gérez toutes vos transactions</p>
+              </div>
+            </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-2xl shadow-premium p-6 hover-lift fade-in border border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+            <div className="login-card hover-lift">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div style={{ width: '48px', height: '48px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)' }}>
                   <ShoppingCart className="w-6 h-6 text-white" />
                 </div>
               </div>
-              <div>
-                <p className="text-gray-600 text-sm font-medium mb-1">Total des ventes</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalSales}</p>
-                <p className="text-xs text-gray-500 mt-2">Toutes les transactions</p>
-              </div>
+              <p style={{ color: '#718096', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>Total des ventes</p>
+              <p style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c' }}>{stats.totalSales}</p>
+              <p style={{ fontSize: '12px', color: '#a0aec0', marginTop: '8px' }}>Toutes les transactions</p>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-premium p-6 hover-lift fade-in border border-gray-100" style={{animationDelay: '0.1s'}}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
+            <div className="login-card hover-lift">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div style={{ width: '48px', height: '48px', background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(72, 187, 120, 0.4)' }}>
                   <Calendar className="w-6 h-6 text-white" />
                 </div>
               </div>
-              <div>
-                <p className="text-gray-600 text-sm font-medium mb-1">Ventes aujourd'hui</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.todaySales}</p>
-                <p className="text-xs text-gray-500 mt-2">Transactions du jour</p>
-              </div>
+              <p style={{ color: '#718096', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>Ventes aujourd'hui</p>
+              <p style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c' }}>{stats.todaySales}</p>
+              <p style={{ fontSize: '12px', color: '#a0aec0', marginTop: '8px' }}>Transactions du jour</p>
             </div>
 
-            <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-premium-lg p-6 hover-lift fade-in text-white" style={{animationDelay: '0.2s'}}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                  <DollarSign className="w-6 h-6 text-white" />
+            <div className="login-card hover-lift" style={{ background: 'linear-gradient(135deg, #ed8936 0%, #dd6b20 100%)', color: 'white' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div style={{ width: '48px', height: '48px', background: 'rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(10px)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <DollarSign className="w-6 h-6" />
                 </div>
               </div>
-              <div>
-                <p className="text-orange-100 text-sm font-medium mb-1">Chiffre d'affaires</p>
-                <p className="text-3xl font-bold">{formatPrice(stats.totalRevenue)}</p>
-                <p className="text-xs text-orange-100 mt-2">Revenus totaux générés</p>
-              </div>
+              <p style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', opacity: 0.9 }}>Chiffre d'affaires</p>
+              <p style={{ fontSize: '32px', fontWeight: '700' }}>{formatPrice(stats.totalRevenue)}</p>
+              <p style={{ fontSize: '12px', marginTop: '8px', opacity: 0.8 }}>Revenus totaux générés</p>
             </div>
           </div>
 
-          {/* Success/Error Messages */}
+          {/* Messages */}
           {success && (
-            <div className="bg-gradient-to-r from-green-50 to-green-100 border-l-4 border-green-500 text-green-800 px-6 py-4 rounded-xl mb-6 fade-in shadow-lg">
-              <div className="flex items-center">
-                <CheckCircle className="w-6 h-6 mr-3 text-green-600" />
-                <div>
-                  <p className="font-semibold">{success}</p>
-                </div>
-              </div>
+            <div className="alert alert-success" style={{ marginBottom: '24px' }}>
+              <CheckCircle className="w-5 h-5" />
+              {success}
             </div>
           )}
           {error && (
-            <div className="bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-500 text-red-800 px-6 py-4 rounded-xl mb-6 fade-in shadow-lg">
-              <div className="flex items-center">
-                <AlertCircle className="w-6 h-6 mr-3 text-red-600" />
-                <div>
-                  <p className="font-semibold">{error}</p>
-                </div>
-              </div>
+            <div className="alert alert-error" style={{ marginBottom: '24px' }}>
+              <AlertCircle className="w-5 h-5" />
+              {error}
             </div>
           )}
 
           {/* Action Bar */}
-          <div className="bg-white rounded-2xl shadow-premium p-6 mb-8 fade-in border border-gray-100">
-            <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:space-x-4">
-              <div className="relative w-full lg:w-96">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <div className="login-card" style={{ marginBottom: '32px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ position: 'relative', flex: 1 }}>
+                <Search style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#a0aec0', width: '20px', height: '20px' }} />
                 <input
                   type="text"
                   placeholder="Rechercher une vente..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-gray-50 hover:bg-white"
+                  className="form-input"
+                  style={{ paddingLeft: '48px' }}
                 />
               </div>
-
-              <button
-                onClick={() => handleOpenModal()}
-                className="w-full lg:w-auto flex items-center justify-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl hover-lift font-semibold"
-              >
+              <button onClick={() => handleOpenModal()} className="submit-btn" style={{ background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)' }}>
                 <Plus className="w-5 h-5" />
                 <span>Nouvelle vente</span>
               </button>
             </div>
           </div>
 
-          {/* Sales Table/Empty State */}
+          {/* Sales List */}
           {filteredSales.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-premium p-16 text-center fade-in">
-              <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
-                <ShoppingCart className="w-12 h-12 text-gray-400" />
+            <div className="login-card" style={{ textAlign: 'center', padding: '64px 32px' }}>
+              <div style={{ width: '80px', height: '80px', background: 'rgba(72, 187, 120, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                <ShoppingCart className="w-10 h-10" style={{ color: '#48bb78' }} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#2d3748', marginBottom: '8px' }}>
                 {searchTerm ? 'Aucune vente trouvée' : 'Aucune vente disponible'}
               </h3>
-              <p className="text-gray-500 mb-6">
-                {searchTerm
-                  ? 'Essayez une autre recherche'
-                  : 'Commencez par enregistrer votre première vente'}
+              <p style={{ color: '#718096', marginBottom: '24px' }}>
+                {searchTerm ? 'Essayez une autre recherche' : 'Commencez par enregistrer votre première vente'}
               </p>
               {!searchTerm && (
-                <button
-                  onClick={() => handleOpenModal()}
-                  className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg font-semibold"
-                >
+                <button onClick={() => handleOpenModal()} className="submit-btn" style={{ width: 'auto', display: 'inline-flex', background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)' }}>
                   <Plus className="w-5 h-5" />
                   <span>Créer une vente</span>
                 </button>
               )}
             </div>
           ) : (
-            <Table
-              columns={columns}
-              data={filteredSales}
-              onEdit={handleOpenModal}
-              onDelete={handleDelete}
-            />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {filteredSales.map((sale) => (
+                <div key={sale.id} className="login-card hover-lift" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
+                      <div style={{ width: '48px', height: '48px', background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', boxShadow: '0 4px 12px rgba(72, 187, 120, 0.3)' }}>
+                        {sale.quantity}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ fontWeight: '700', color: '#2d3748', fontSize: '16px', marginBottom: '4px' }}>{sale.product_nom}</p>
+                        <p style={{ fontSize: '14px', color: '#718096' }}>Par <span style={{ fontWeight: '600' }}>{sale.user_nom}</span></p>
+                        <p style={{ fontSize: '12px', color: '#a0aec0', marginTop: '4px' }}>{formatDate(sale.date)}</p>
+                      </div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ textAlign: 'right' }}>
+                        <p style={{ fontSize: '12px', color: '#718096', marginBottom: '4px' }}>Prix unitaire: {formatPrice(sale.prix_unitaire)}</p>
+                        <p style={{ fontSize: '20px', fontWeight: '700', color: '#48bb78' }}>{formatPrice(sale.prix_total)}</p>
+                      </div>
+                      
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button onClick={() => handleOpenModal(sale)} style={{ padding: '8px', background: 'rgba(102, 126, 234, 0.1)', border: 'none', borderRadius: '8px', color: '#667eea', cursor: 'pointer' }}>
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleDelete(sale)} style={{ padding: '8px', background: 'rgba(245, 101, 101, 0.1)', border: 'none', borderRadius: '8px', color: '#f56565', cursor: 'pointer' }}>
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </main>
       </div>
 
       {/* Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        title={
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
-              <ShoppingCart className="w-5 h-5 text-white" />
-            </div>
-            <span>{editingSale ? 'Modifier la vente' : 'Nouvelle vente'}</span>
-          </div>
-        }
-      >
-        {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 text-red-800 px-4 py-3 rounded-lg mb-4">
-            <div className="flex items-center">
-              <AlertCircle className="w-5 h-5 mr-3" />
-              {error}
-            </div>
-          </div>
-        )}
-        {success && (
-          <div className="bg-green-50 border-l-4 border-green-500 text-green-800 px-4 py-3 rounded-lg mb-4">
-            <div className="flex items-center">
-              <CheckCircle className="w-5 h-5 mr-3" />
-              {success}
-            </div>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2 text-sm">
-              Produit *
-            </label>
-            <select
-              value={formData.product_id}
-              onChange={(e) =>
-                setFormData({ ...formData, product_id: e.target.value })
-              }
-              className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-              required
-            >
-              <option value="">Sélectionnez un produit</option>
-              {products.map((product) => (
-                <option key={product.id} value={product.id}>
-                  {product.nom} - Stock: {product.stock} - {formatPrice(product.prix)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2 text-sm">
-              Vendeur *
-            </label>
-            <select
-              value={formData.user_id}
-              onChange={(e) =>
-                setFormData({ ...formData, user_id: e.target.value })
-              }
-              className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-              required
-            >
-              <option value="">Sélectionnez un vendeur</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.nom} ({user.email})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2 text-sm">
-              Quantité *
-            </label>
-            <input
-              type="number"
-              min="1"
-              value={formData.quantity}
-              onChange={(e) =>
-                setFormData({ ...formData, quantity: e.target.value })
-              }
-              className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-              placeholder="Ex: 2"
-              required
-            />
-          </div>
-
-          {formData.product_id && formData.quantity && (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 p-5 rounded-xl">
-              <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
-                <TrendingUp className="w-5 h-5 mr-2 text-blue-600" />
-                Récapitulatif
-              </h4>
-              <div className="space-y-2">
-                <p className="text-sm text-gray-700">
-                  <span className="font-medium">Produit:</span>{' '}
-                  {products.find((p) => p.id === parseInt(formData.product_id))?.nom}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <span className="font-medium">Prix unitaire:</span>{' '}
-                  {formatPrice(
-                    products.find((p) => p.id === parseInt(formData.product_id))
-                      ?.prix || 0
-                  )}
-                </p>
-                <p className="text-sm text-gray-700">
-                  <span className="font-medium">Quantité:</span> {formData.quantity} unité{formData.quantity > 1 ? 's' : ''}
-                </p>
-                <div className="border-t border-blue-200 pt-2 mt-2">
-                  <p className="text-lg font-bold text-gray-800">
-                    <span className="font-medium">Total:</span>{' '}
-                    <span className="text-green-600">
-                      {formatPrice(
-                        (products.find((p) => p.id === parseInt(formData.product_id))
-                          ?.prix || 0) * parseInt(formData.quantity || 0)
-                      )}
-                    </span>
-                  </p>
+      {isModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+          <div className="login-card" style={{ maxWidth: '500px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: '40px', height: '40px', background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <ShoppingCart className="w-5 h-5 text-white" />
                 </div>
+                <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1a202c' }}>
+                  {editingSale ? 'Modifier la vente' : 'Nouvelle vente'}
+                </h2>
               </div>
+              <button onClick={handleCloseModal} style={{ padding: '8px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#718096' }}>
+                <X className="w-5 h-5" />
+              </button>
             </div>
-          )}
 
-          <div className="flex space-x-4 pt-6">
-            <button
-              type="button"
-              onClick={handleCloseModal}
-              className="flex-1 px-6 py-3.5 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all font-semibold"
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl font-semibold"
-            >
-              {editingSale ? '✓ Modifier' : '+ Créer'}
-            </button>
+            {error && (
+              <div className="alert alert-error" style={{ marginBottom: '16px' }}>
+                <AlertCircle className="w-5 h-5" />
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="alert alert-success" style={{ marginBottom: '16px' }}>
+                <CheckCircle className="w-5 h-5" />
+                {success}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div className="form-group">
+                <label className="form-label">Produit *</label>
+                <select
+                  value={formData.product_id}
+                  onChange={(e) => setFormData({ ...formData, product_id: e.target.value })}
+                  className="form-input"
+                  required
+                >
+                  <option value="">Sélectionnez un produit</option>
+                  {products.map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.nom} - Stock: {product.stock} - {formatPrice(product.prix)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Vendeur *</label>
+                <select
+                  value={formData.user_id}
+                  onChange={(e) => setFormData({ ...formData, user_id: e.target.value })}
+                  className="form-input"
+                  required
+                >
+                  <option value="">Sélectionnez un vendeur</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.nom} ({user.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Quantité *</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={formData.quantity}
+                  onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                  className="form-input"
+                  placeholder="Ex: 2"
+                  required
+                />
+              </div>
+
+              {formData.product_id && formData.quantity && (
+                <div style={{ padding: '16px', background: 'rgba(72, 187, 120, 0.1)', borderRadius: '12px', border: '1px solid rgba(72, 187, 120, 0.3)' }}>
+                  <h4 style={{ fontWeight: '600', color: '#2d3748', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <TrendingUp className="w-5 h-5" style={{ color: '#48bb78' }} />
+                    Récapitulatif
+                  </h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <p style={{ fontSize: '14px', color: '#4a5568' }}>
+                      <span style={{ fontWeight: '600' }}>Produit:</span> {products.find((p) => p.id === parseInt(formData.product_id))?.nom}
+                    </p>
+                    <p style={{ fontSize: '14px', color: '#4a5568' }}>
+                      <span style={{ fontWeight: '600' }}>Prix unitaire:</span> {formatPrice(products.find((p) => p.id === parseInt(formData.product_id))?.prix || 0)}
+                    </p>
+                    <p style={{ fontSize: '14px', color: '#4a5568' }}>
+                      <span style={{ fontWeight: '600' }}>Quantité:</span> {formData.quantity} unité{formData.quantity > 1 ? 's' : ''}
+                    </p>
+                    <div style={{ borderTop: '1px solid rgba(72, 187, 120, 0.3)', paddingTop: '8px', marginTop: '8px' }}>
+                      <p style={{ fontSize: '18px', fontWeight: '700', color: '#2d3748' }}>
+                        <span>Total:</span> <span style={{ color: '#48bb78' }}>{formatPrice((products.find((p) => p.id === parseInt(formData.product_id))?.prix || 0) * parseInt(formData.quantity || 0))}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                <button type="button" onClick={handleCloseModal} style={{ flex: 1, padding: '14px', border: '2px solid #e2e8f0', background: 'white', borderRadius: '12px', color: '#4a5568', fontWeight: '600', cursor: 'pointer' }}>
+                  Annuler
+                </button>
+                <button type="submit" className="submit-btn" style={{ flex: 1, background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)' }}>
+                  {editingSale ? '✓ Modifier' : '+ Créer'}
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
-      </Modal>
+        </div>
+      )}
     </div>
   );
 };
